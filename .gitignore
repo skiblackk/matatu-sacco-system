@@ -1,4 +1,4 @@
-# Compiled binaries
+# Don't commit compiled programs
 matatu
 matatu.exe
 *.o
@@ -6,20 +6,18 @@ matatu.exe
 *.obj
 *.exe
 
-# Build directories
+# Ignore build folders
 build/
 bin/
 out/
 
-# IDE files
+# IDE stuff I don't need in git
 .vscode/
 .idea/
 *.suo
 *.sln
 *.vcxproj*
 
-# macOS
+# OS files
 .DS_Store
-
-# Windows
 Thumbs.db

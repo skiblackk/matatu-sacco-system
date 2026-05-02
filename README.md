@@ -8,18 +8,12 @@
 
 ## 📋 Project Description
 
-Many Matatu SACCOs in Kenya still manage their fleets manually using notebooks and WhatsApp messages. This leads to:
-- Lost or disputed fare records
-- Missed vehicle service schedules
-- Untracked member penalties and debts
-
-This C++ program automates the core operations of a Matatu SACCO, including:
-- Registering member-owners and tracking their vehicles
-- Deploying matatus and recording daily fare collections
-- Calculating shortfall penalties automatically
-- Tracking vehicle service schedules and flagging overdue ones
-- Generating reports on fleet status, service dues, and member balances
-- Persisting all data to CSV files between sessions
+The SACCO business in Nairobi still relies on WhatsApp and notebooks to track vehicles and money. This means disputes over fare records, missed maintenance, and hard to track who owes what. I built this C++ program to solve that with:
+- Registering members and their vehicles
+- Recording daily fares
+- Auto-calculating penalties when the target isn't hit
+- Tracking when vehicles need service
+- Saving everything to CSV so it persists
 
 ---
 
@@ -27,18 +21,18 @@ This C++ program automates the core operations of a Matatu SACCO, including:
 
 | Class | Role |
 |-------|------|
-| `Date` | Handles all date arithmetic, formatting, and comparisons |
-| `Matatu` | Represents a single vehicle — fare, status, service tracking |
-| `Member` | Represents a SACCO member-owner — vehicles, balances, payments |
-| `SACCO` | Main controller — manages fleet, members, reports, and file I/O |
+| `Date` | Stores dates and does date math |
+| `Matatu` | One vehicle - tracks plate number, money collected, target amount |
+| `Member` | SACCO member - owns vehicles and has a balance due |
+| `SACCO` | Manages all vehicles and members, loads/saves data |
 
 ---
 
 ## ⚙️ Setup Instructions
 
 ### Requirements
-- A C++ compiler: `g++` (GCC 11+) or any C++17-compatible compiler
-- A terminal / command prompt
+- A C++ compiler like `g++` (version 11 or later)
+- Terminal to run commands
 
 ### How to Compile
 
