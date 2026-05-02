@@ -39,15 +39,15 @@ public:
 
 ### 2. Abstraction
 
-Each class hides complex implementation details behind a clean interface.
+I hid the complicated stuff inside each class so users of the class don't need to understand how it works.
 
-- `Date` hides leap year logic, month-day tables, and the conversion to a "total days" number. Callers just use `daysBetween()` or the `-` operator.
-- `SACCO` hides the linear search algorithms for locating vehicles/members. Callers just call `deployVehicle(plate, date)` without knowing how the lookup works.
-- `Matatu::endDay()` bundles penalty calculation, console output, and status reset into one call.
+- `Date` handles all the leap year math and stuff - users just call `daysBetween()` or use the `-` operator without worrying about the details.
+- `SACCO` does searches for vehicles/members internally - the main code just calls `deployVehicle(plate, date)` and it figures things out.
+- `Matatu::endDay()` does everything at once - calculates penalty, prints output, resets status.
 
-### 3. Inheritance (Potential Extension)
+### 3. Inheritance (Could Add Later)
 
-The current design uses composition (SACCO *has* Matatus and Members), which is appropriate for this domain. However, the system is structured to support inheritance easily in a Phase 2:
+Right now I used composition - the SACCO holds Matatus and Members. But I structured it so inheritance could work later if needed:
 
 ```
 Person (base)
@@ -78,16 +78,16 @@ This is used internally in penalty and service calculations.
 ## Class Design Justification
 
 ### Why a separate `Date` class?
-The assignment requires date arithmetic (service scheduling every 90 days, penalty per day, overdue detection). Centralizing this logic in one reusable class avoids duplication and makes testing easier. Every `Matatu` holds two `Date` objects and relies on `addDays()` and the `-` operator.
+I needed to do a lot of date math - checking if service is overdue, calculating penalties per day, that kind of thing. Instead of writing the same date code everywhere, I put it all in one place. Every `Matatu` uses it for tracking service dates.
 
 ### Why does `Matatu` not inherit from a base class?
-In this domain, all fleet vehicles are matatus. A single concrete class with clear responsibilities is simpler and less error-prone than premature abstraction. The `SACCO` class acts as the system coordinator.
+Since all the vehicles in the system are matatus, I didn't need to make a base Vehicle class. Just having one Matatu class is way simpler. The SACCO class manages everything.
 
 ### Why does `SACCO` not store vehicle ownership?
-Vehicle ownership is stored in `Member` (as a vector of plate strings) rather than in `SACCO` or `Matatu`. This mirrors the real world: a member *owns* a vehicle; the SACCO just manages the fleet. Penalties are pushed to the owning member automatically when `endVehicleDay()` is called.
+Members own the vehicles, not the SACCO. So I store the vehicle list inside the Member class. When a vehicle has a bad day and gets a penalty, it automatically goes to the member who owns it.
 
 ### Why CSV for persistence?
-CSV files are human-readable, can be opened in Excel/Sheets for manual inspection, require no database dependency, and are simple to parse with `getline` and `istringstream`. This matches the skill level of the course and the constraints of a standalone C++ program.
+I used CSV files because they're simple - I can read/write them with basic C++ file operations. People can also open them in Excel if they want to check the data manually. No need for a complex database.
 
 ---
 
@@ -95,11 +95,11 @@ CSV files are human-readable, can be opened in Excel/Sheets for manual inspectio
 
 | Approach | Reason Not Used |
 |----------|-----------------|
-| Inheritance: `Vehicle → Matatu` | Only one vehicle type needed; over-engineering |
-| Database (SQLite) | Requires external library; CSV is sufficient for scope |
-| `struct` instead of `class` | `class` enforces encapsulation with `private` by default |
-| Global variables for fleet/members | Violates encapsulation; `SACCO` class manages state cleanly |
-| Single large `main.cpp` without classes | Does not demonstrate OOP; difficult to maintain |
+| Inheritance: `Vehicle → Matatu` | All vehicles are matatus anyway |
+| Database (SQLite) | Would need extra libraries; CSV works fine |
+| `struct` instead of `class` | Need `private` members for protection |
+| Global variables | Would be messy; better to keep things in classes |
+| One big main.cpp | Wouldn't show OOP and would be hard to understand |
 
 ---
 
